@@ -47,3 +47,7 @@ class BlueLib:
         if r.status_code != 200:
             raise ValueError(r.text)
         return r.json()
+    def delete_video(self, video_id):
+        r = requests.post(self.base_url + "/api/live/delete-video/" + str(video_id), headers=self.headers)
+        if r.status_code != 200:
+            raise ValueError(r.text)
