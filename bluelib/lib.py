@@ -1,25 +1,32 @@
 import requests
 
+
 class BlueLib:
     def __init__(self, apikey=None, base_url=None):
         self.apikey = apikey
         self.base_url = base_url
         self.headers = {}
         if self.apikey is not None:
-            self.headers['token'] = self.apikey
-    
+            self.headers["token"] = self.apikey
+
     def get_recommended(self, ignore=None):
         if ignore is None:
             ignore = []
         if self.apikey is None:
             raise PermissionError("No API key was provided")
-        r = requests.get(self.base_url + "/live/recommended", headers={**self.headers, **{"ignore": " ".join(ignore)}})
+        r = requests.get(
+            self.base_url + "/live/recommended",
+            headers={**self.headers, **{"ignore": " ".join(ignore)}},
+        )
         if r.status_code != 200:
             raise ValueError(r.text)
         return r.json()
 
     def login(self, username, password, save=True):
-        r = requests.post(self.base_url + "/live/login", headers={"username": username, "password": password})
+        r = requests.post(
+            self.base_url + "/live/login",
+            headers={"username": username, "password": password},
+        )
         if r.status_code != 200:
             raise ValueError(r.text)
         token = r.text
@@ -29,7 +36,10 @@ class BlueLib:
         return token
 
     def register(self, username, password, save=True):
-        r = requests.get(self.base_url + "/live/register", headers={"username": username, "password": password})
+        r = requests.get(
+            self.base_url + "/live/register",
+            headers={"username": username, "password": password},
+        )
         if r.status_code != 200:
             raise ValueError(r.text)
         token = r.text
@@ -43,11 +53,19 @@ class BlueLib:
             "description": description,
             "series": series,
         }
-        r = requests.get(self.base_url + "/live/upload", headers=self.headers, files={"video_upload": (filename, open(filename, "rb"))}, data=data)
+        r = requests.get(
+            self.base_url + "/live/upload",
+            headers=self.headers,
+            files={"video_upload": (filename, open(filename, "rb"))},
+            data=data,
+        )
         if r.status_code != 200:
             raise ValueError(r.text)
         return r.json()
+
     def delete_video(self, video_id):
-        r = requests.post(self.base_url + "/live/delete-video/" + str(video_id), headers=self.headers)
+        r = requests.post(
+            self.base_url + "/live/delete-video/" + str(video_id), headers=self.headers
+        )
         if r.status_code != 200:
             raise ValueError(r.text)
